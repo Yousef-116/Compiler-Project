@@ -19,9 +19,12 @@ namespace JASON_Compiler
 
         private void button1_Click(object sender, EventArgs e)
         {
-            textBox2.Clear();
+            dataGridView1.Rows.Clear();
+            JASON_Compiler.TokenStream.Clear();
+            Error_List.Clear();
+            Errors.Error_List.Clear();
             //string Code=textBox1.Text.ToLower();
-            string Code = textBox1.Text;
+            string Code = this.Code.Text;
             JASON_Compiler.Start_Compiling(Code);
             PrintTokens();
          //   PrintLexemes();
@@ -40,8 +43,8 @@ namespace JASON_Compiler
         {
             for(int i=0; i<Errors.Error_List.Count; i++)
             {
-                textBox2.Text += Errors.Error_List[i];
-                textBox2.Text += "\r\n";
+                Error_List.Text += Errors.Error_List[i];
+                Error_List.Text += "\r\n";
             }
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
