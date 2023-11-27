@@ -10,13 +10,13 @@ public enum Token_Class
     //Begin, Call, Declare,End,Do, EndIf,EndUntil, EndWhile,Integer,Parameters, Procedure, Program,Real, Set,While,Dot,
     
     ELSE,  If, End, Elseif ,
-    INT, FLOAT , String,
+    ReservedWordINT, ReservedWordFLOAT, String, ReservedWordSTRING,
     Read,  Then, Until,  Write,
      Semicolon, Comma, LParanthesis, RParanthesis, EqualOp, LessThanOp,
     GreaterThanOp, NotEqualOp, PlusOp, MinusOp, MultiplyOp, DivideOp, assignmentOP ,
     Idenifier, Constant, Comment, Return,
     OROp,ANDOp , Repeat, Main ,
-    LCurlybracket, RCurlybracket,
+    LCurlybracket, RCurlybracket  , Endl, Colon , Dot  , Declare , Int , Float
 }
 namespace JASON_Compiler
 {
@@ -37,14 +37,17 @@ namespace JASON_Compiler
         public Scanner()
         {
             ReservedWords.Add("if", Token_Class.If);
-            ReservedWords.Add("int", Token_Class.INT);
-            ReservedWords.Add("float", Token_Class.FLOAT);
+            ReservedWords.Add("int", Token_Class.ReservedWordINT);
+            ReservedWords.Add("float", Token_Class.ReservedWordFLOAT);
+            ReservedWords.Add("string", Token_Class.ReservedWordSTRING);
             ReservedWords.Add("return", Token_Class.Return);
             ReservedWords.Add("main", Token_Class.Main);
             ReservedWords.Add("elseif", Token_Class.Elseif);
+            ReservedWords.Add("else", Token_Class.ELSE);
             ReservedWords.Add("read", Token_Class.Read);
             ReservedWords.Add("repeat", Token_Class.Repeat);
             ReservedWords.Add("end", Token_Class.End);
+            ReservedWords.Add("endl", Token_Class.Endl);
             ReservedWords.Add("then", Token_Class.Then);
             ReservedWords.Add("until", Token_Class.Until);
             ReservedWords.Add("write", Token_Class.Write);
@@ -67,6 +70,7 @@ namespace JASON_Compiler
             Operators.Add("/", Token_Class.DivideOp);
             Operators.Add("&&", Token_Class.ANDOp);
             Operators.Add("||", Token_Class.OROp);
+            Operators.Add(".", Token_Class.Dot);
 
         }
 
@@ -129,7 +133,7 @@ namespace JASON_Compiler
                     }
                     FindTokenClass(CurrentLexeme);
                 }
-                else if (CurrentChar == '"')
+                else if (CurrentChar == '\"')
                 {
                     j++;
                     while (j < SourceCode.Length && SourceCode[j] != '"')
@@ -188,30 +192,35 @@ namespace JASON_Compiler
                 Tok.token_type = ReservedWords[Lex];
                 Tokens.Add(Tok);
             }
-
-            //Is it a INT?
-
-            else if (isConstant(Lex))
+            // Is it an operator?
+            else if (Operators.ContainsKey(Lex))
             {
-                Tok.token_type = Token_Class.Constant;
+                Tok.token_type = Operators[Lex];
                 Tokens.Add(Tok);
             }
 
+            //Is it a constant?
+            //else if (isConstant(Lex))
+            //{
+            //    Tok.token_type = Token_Class.Constant;
+            //    Tokens.Add(Tok);
+            //}
+
             ////Is it a INT?
 
-            //else if (isINT(Lex))
-            //{
-            //    Tok.token_type = Token_Class.INT;
-            //    Tokens.Add(Tok);
-            //}
+            else if (isINT(Lex))
+            {
+                Tok.token_type = Token_Class.Int;
+                Tokens.Add(Tok);
+            }
 
-            ////Is it a float?
+            //Is it a float?
 
-            //else if (isfloat(Lex))
-            //{
-            //    Tok.token_type = Token_Class.FLOAT;
-            //    Tokens.Add(Tok);
-            //}
+            else if (isfloat(Lex))
+            {
+                Tok.token_type = Token_Class.Float;
+                Tokens.Add(Tok);
+            }
 
             //Is it an identifier?
             else if (isIdentifier(Lex))
@@ -221,28 +230,20 @@ namespace JASON_Compiler
             }
 
 
-            //Is it a Constant?
-
+            //Is it a string?
             else if (isString(Lex))
             {
                 Tok.token_type = Token_Class.String;
                 Tokens.Add(Tok);
             }
 
-
+            //comment
             else if (isComment(Lex))
             {
                 Tok.token_type = Token_Class.Comment;
                 Tokens.Add(Tok);
             }
 
-            //Is it an operator?
-
-            else if (Operators.ContainsKey(Lex))
-            {
-                Tok.token_type = Operators[Lex];
-                Tokens.Add(Tok);
-            }
 
             //Is it an undefined?
             else
@@ -253,33 +254,33 @@ namespace JASON_Compiler
         bool isIdentifier(string lex)
         {
             // Check if the lex is an identifier or not.
-            Regex regex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]*");  
+            Regex regex = new Regex(@"^[a-zA-Z][a-zA-Z0-9]*", RegexOptions.Compiled);  
             
             return regex.IsMatch(lex);
         }
-        //bool isINT(string lex)
-        //{
-        //    // Check if the lex is a constant (Number) or not.
-        //    Regex regex = new Regex(@"^\d+$");
-
-        //    return regex.IsMatch(lex);
-        //}
-
-        //bool isfloat(string lex)
-        //{
-        //    // Check if the lex is a constant (Number) or not.
-        //    Regex regex = new Regex(@"^\d+(\.\d+)$");
-
-        //    return regex.IsMatch(lex);
-        //}
-
-        bool isConstant(string lex)
+        bool isINT(string lex)
         {
-            // Check if the lex is a constant (Number) or not.
-            Regex regex = new Regex(@"^\d+(\.\d+)$");
+            // Check if the lex is an int .
+            Regex regex = new Regex(@"^[\d]+$", RegexOptions.Compiled);
 
             return regex.IsMatch(lex);
         }
+
+        bool isfloat(string lex)
+        {
+            // Check if the lex is a float number .
+            Regex regex = new Regex(@"^[\d]+(\.[\d]+)$", RegexOptions.Compiled);
+
+            return regex.IsMatch(lex);
+        }
+
+        //bool isConstant(string lex)
+        //{
+        //    // Check if the lex is a constant (Number) or not.
+        //    Regex regex = new Regex(@"^\d+(\.\d+)$", RegexOptions.Compiled);
+
+        //    return regex.IsMatch(lex);
+        //}
 
 
         bool isComment(string lex)
@@ -287,18 +288,17 @@ namespace JASON_Compiler
             // Check if the lex is a constant (Number) or not.
             //  Regex regex = new Regex(@"^/\*[^/]*\*/$");
             // Regex regex = new Regex(@"/\*(?:[^*]|\*(?!/))*\*/");
-            Regex regex = new Regex(@"^/\*[\s\S]*\*/$");
-
+            Regex regex = new Regex(@"^/\*[\s\S]*\*/$", RegexOptions.Compiled);
             return regex.IsMatch(lex);
         }
 
         bool isString(string lex)
         {
             // Check if the lex is a constant (Number) or not.
-             Regex regex = new Regex(@"^"".*""$");
-
+            Regex regex = new Regex(@"^"".*""$" ,RegexOptions.Compiled);
             return regex.IsMatch(lex);
         }
+        
 
     }
 }
