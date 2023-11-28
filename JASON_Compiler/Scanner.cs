@@ -103,10 +103,24 @@ namespace JASON_Compiler
                     FindTokenClass(CurrentLexeme);
                 }
 
-                else if(CurrentChar >= '0' && CurrentChar <= '9')
+                //else if(CurrentChar >= '0' && CurrentChar <= '9')
+                //{
+                //    j++;
+                //    while (j < SourceCode.Length && ( SourceCode[j] == '.' || (SourceCode[j] >= '0' && SourceCode[j] <= '9')))
+                //    {
+                //        CurrentLexeme += SourceCode[j].ToString();
+                //        j++;
+                //    }
+                //    i = j - 1;
+                //    FindTokenClass(CurrentLexeme);
+                //}
+
+                //  4dsf 
+                
+                else if (CurrentChar >= '0' && CurrentChar <= '9')
                 {
                     j++;
-                    while (j < SourceCode.Length && ( SourceCode[j] == '.' || (SourceCode[j] >= '0' && SourceCode[j] <= '9')))
+                    while (j < SourceCode.Length && (SourceCode[j] == '.' || (SourceCode[j] >= 'A' && SourceCode[j] <= 'z') || (SourceCode[j] >= '0' && SourceCode[j] <= '9')  )  )
                     {
                         CurrentLexeme += SourceCode[j].ToString();
                         j++;
@@ -114,6 +128,7 @@ namespace JASON_Compiler
                     i = j - 1;
                     FindTokenClass(CurrentLexeme);
                 }
+
                 /*yosuef*/
 
                 /*youosef**/
@@ -139,6 +154,7 @@ namespace JASON_Compiler
                     }
                     FindTokenClass(CurrentLexeme);
                 }
+
                 else if (CurrentChar == '\"')
                 {
                     j++;
@@ -152,6 +168,7 @@ namespace JASON_Compiler
                     j++;
                     i = j - 1;
                 }
+             
 
                 else
                 {
