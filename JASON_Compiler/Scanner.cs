@@ -52,6 +52,13 @@ namespace JASON_Compiler
             ReservedWords.Add("until", Token_Class.Until);
             ReservedWords.Add("write", Token_Class.Write);
 
+            
+            //==================================================
+            // Don't change ya Awad
+            Operators.Add("–", Token_Class.MinusOp);
+            Operators.Add("-", Token_Class.MinusOp);
+            //==================================================
+
 
             Operators.Add("{", Token_Class.LCurlybracket);
             Operators.Add("}", Token_Class.RCurlybracket);
@@ -65,7 +72,6 @@ namespace JASON_Compiler
             Operators.Add(">", Token_Class.GreaterThanOp);
             Operators.Add("<>", Token_Class.NotEqualOp);
             Operators.Add("+", Token_Class.PlusOp);
-            Operators.Add("-", Token_Class.MinusOp);
             Operators.Add("*", Token_Class.MultiplyOp);
             Operators.Add("/", Token_Class.DivideOp);
             Operators.Add("&&", Token_Class.ANDOp);
@@ -167,14 +173,14 @@ namespace JASON_Compiler
                         CurrentLexeme += SourceCode[i + 1].ToString();
                         i++;    
                     }
-                    //    <>
+                    //    <> -> !=
                     if (i + 1 < SourceCode.Length && SourceCode[i + 1] == '>')
                     {
                         CurrentLexeme += SourceCode[i + 1].ToString();
                         i++;
                     }
+
                     FindTokenClass(CurrentLexeme);
-                    
                 }
             }
             
@@ -286,7 +292,7 @@ namespace JASON_Compiler
         bool isComment(string lex)
         {
             // Check if the lex is a constant (Number) or not.
-            //  Regex regex = new Regex(@"^/\*[^/]*\*/$");
+            // Regex regex = new Regex(@"^/\*[^/]*\*/$");
             // Regex regex = new Regex(@"/\*(?:[^*]|\*(?!/))*\*/");
             Regex regex = new Regex(@"^/\*[\s\S]*\*/$", RegexOptions.Compiled);
             return regex.IsMatch(lex);
