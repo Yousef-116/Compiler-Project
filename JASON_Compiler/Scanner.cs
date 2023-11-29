@@ -76,7 +76,7 @@ namespace JASON_Compiler
             Operators.Add("/", Token_Class.DivideOp);
             Operators.Add("&&", Token_Class.ANDOp);
             Operators.Add("||", Token_Class.OROp);
-            Operators.Add(".", Token_Class.Dot);
+            //Operators.Add(".", Token_Class.Dot);
 
         }
 
@@ -158,13 +158,17 @@ namespace JASON_Compiler
                 else if (CurrentChar == '\"')
                 {
                     j++;
-                    while (j < SourceCode.Length && SourceCode[j] != '"')
+                    if(j < SourceCode.Length - 1 && SourceCode[j] != ' ' )
+                    { 
+                    while (j < SourceCode.Length -1 && (SourceCode[j] != '"' && SourceCode[j] != '\r' && SourceCode[j] != '\n'))
                     {
                         CurrentLexeme += SourceCode[j].ToString();
                         j++;
                     }
                     CurrentLexeme += SourceCode[j].ToString();
-                    FindTokenClass(CurrentLexeme);
+                        FindTokenClass(CurrentLexeme);
+                    }
+                    
                     j++;
                     i = j - 1;
                 }
