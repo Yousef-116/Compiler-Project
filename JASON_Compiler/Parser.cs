@@ -43,6 +43,7 @@ namespace JASON_Compiler
 
         public Node Program()
         {
+            // program -> function_stattement main_function
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("program");
@@ -56,7 +57,7 @@ namespace JASON_Compiler
         }
         private Node function_statement()
         {
-
+            // function_statement -> function_declaration function_body function_statement | e
             if ((InputPointer < TokenStream.Count) && TokenStream[InputPointer + 1].token_type != Token_Class.Main)
             {
                 Node node = new Node("function_statement");
@@ -75,6 +76,7 @@ namespace JASON_Compiler
         }
         private Node function_declaration()
         {
+            // function_declaration -> DataType Identifier "(" parameter_list ")"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("function_declaration");
@@ -91,7 +93,7 @@ namespace JASON_Compiler
 
         private Node parameter_list()
         {
-
+            // parameter_list -> DataType identifier parameter_list_dash | e
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("parameter_list");
@@ -110,7 +112,7 @@ namespace JASON_Compiler
 
         private Node parameter_list_dash()
         {
-
+            // parameter_list_dash -> "," DataType identifier parameter_list_dash | e
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("parameter_list_dash");
@@ -128,6 +130,7 @@ namespace JASON_Compiler
         }
         private Node function_body()
         {
+            // function_body -> "{" statements return_statement "}"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("function_body");
@@ -142,6 +145,7 @@ namespace JASON_Compiler
         }
         private Node main_function()
         {
+            // main_function -> DataType "main" "(" ")" function_body
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("main_function");
@@ -160,7 +164,7 @@ namespace JASON_Compiler
 
         private Node DataType()
         {
-
+            // DataType -> int | float | string
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("DataType");
@@ -183,7 +187,7 @@ namespace JASON_Compiler
 
         private Node Statements()
         {
-
+            // Statements -> statement statements | e
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("Statements");
@@ -208,7 +212,7 @@ namespace JASON_Compiler
 
         private Node Statement()
         {
-
+            // Statements -> declaration_stmt | assignment_stmt | write_stmt | read_stmt | repeat_stmt | if_stmt | function_call | comment
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("Statement");
@@ -261,7 +265,7 @@ namespace JASON_Compiler
         }
         private Node declaration_statement()
         {
-            //Declaration_Statement->Datatype identifier Decls;
+            // Declaration_Statement->Datatype identifier declaration_statement_dash;
             //Decls-> , identifer Decls | Decl_Assignment Decls | ε
             //Decl_Assignment-> := Expression 
             if (InputPointer < TokenStream.Count)
@@ -279,9 +283,7 @@ namespace JASON_Compiler
 
         private Node declaration_statement_dash()
         {
-            //Declaration_Statement->Datatype identifier Decls;
-            //Decls-> , identifer Decls | Decl_Assignment Decls | ε
-            //Decl_Assignment-> := Expression 
+            // declaration_statement_dash -> "," identifer declaration_statement_dash | ":=" expression_statement  declaration_statement_dash | ε
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("declaration_statement_dash");
@@ -303,6 +305,7 @@ namespace JASON_Compiler
         }
         private Node assignment_statement()
         {
+            // assignment_statement -> identifier ":=" expression_statement ":"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("assignment_statement");
@@ -318,7 +321,7 @@ namespace JASON_Compiler
         }
         private Node write_statement()
         {
-
+            // write_statement -> "write" (expression_statement | "endl") ";"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("write_statement");
@@ -341,6 +344,7 @@ namespace JASON_Compiler
         }
         private Node read_statement()
         {
+            // read_statement -> "read" identifier ";"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("read_statement");
@@ -355,6 +359,7 @@ namespace JASON_Compiler
         }
         private Node repeat_statement()
         {
+            // repeat_statement -> "repeat" statements "until" condition_statement
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("repeat_statement");
@@ -370,6 +375,7 @@ namespace JASON_Compiler
         }
         private Node if_statement()
         {
+            // if_statement -> "if" condition_statement "then" statements else_if_statement else_statement "end"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("if_statement");
@@ -388,7 +394,7 @@ namespace JASON_Compiler
         }
         private Node else_if_statement()
         {
-
+            // else_if_statement -> "elseif" condition_statement "then" statements else_if_statement | e
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("else_if_statement");
@@ -407,7 +413,7 @@ namespace JASON_Compiler
 
         private Node else_statement()
         {
-
+            // else_statement -> "else" statements | e
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("else_statement");
@@ -415,7 +421,6 @@ namespace JASON_Compiler
                 {
                     node.Children.Add(match(Token_Class.ELSE));
                     node.Children.Add(Statements());
-                    node.Children.Add(match(Token_Class.End));
                 }
 
                 return node;
@@ -424,6 +429,7 @@ namespace JASON_Compiler
         }
         private Node return_statement()
         {
+            // return_statement -> "return" expression_statement ";"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("return_statement");
@@ -440,6 +446,7 @@ namespace JASON_Compiler
 
         private Node condition_statement()
         {
+            // condition_statement -> condition boolean_expression
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("condition_statement");
@@ -453,7 +460,7 @@ namespace JASON_Compiler
         }
         private Node condition()
         {
-
+            // condition -> identifier (< | > | == | <>) term
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("condition");
@@ -484,7 +491,7 @@ namespace JASON_Compiler
         }
         private Node boolean_expression()
         {
-
+            // boolean_expression -> "&&" condition_statement | "||" condition_statement | e
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("boolean_expression");
@@ -505,7 +512,7 @@ namespace JASON_Compiler
         }
         private Node expression_statement()
         {
-
+            // expression_statement -> string | term | equation
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("expression_statement");
@@ -536,10 +543,10 @@ namespace JASON_Compiler
 
         private Node equation()
         {
-            //Equation->bracket | nobracket
-            //nobracket->term OPpart
-            //bracket-> (term OPpart)
-            //OPpart->Arithemtic_Operator Equation | ε 
+            //Equation->bracket | non-bracket
+            //non-bracket->term equation_arithmetic_part
+            //bracket-> (term equation_arithmetic_part)
+            //equation_arithmetic_part->Arithemtic_Operator Equation | ε 
 
             if (InputPointer < TokenStream.Count)
             {
@@ -558,7 +565,7 @@ namespace JASON_Compiler
         }
         private Node bracket_equation()
         {
-
+            //bracket-> (term equation_arithmetic_part)
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("bracket_equation");
@@ -568,6 +575,7 @@ namespace JASON_Compiler
                     node.Children.Add(term());
                     node.Children.Add(equation_arithmetic_part());
                     node.Children.Add(match(Token_Class.RParanthesis));
+                    node.Children.Add(equation_arithmetic_part());
                 }
                 return node;
             }
@@ -577,6 +585,7 @@ namespace JASON_Compiler
 
         private Node non_bracket_equation()
         {
+            //non-bracket->term equation_arithmetic_part
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("non_bracket_equation");
@@ -590,7 +599,7 @@ namespace JASON_Compiler
         }
         private Node equation_arithmetic_part()
         {
-            //OPpart->Arithemtic_Operator Equation | ε 
+            //equation_arithmetic_part->Arithemtic_Operator Equation | ε 
 
             if (InputPointer < TokenStream.Count)
             {
@@ -625,13 +634,18 @@ namespace JASON_Compiler
 
         private Node term()
         {
-
+            // term -> number | identifier | function_call
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("term");
                 if (TokenStream[InputPointer].token_type == Token_Class.Int)
                 {
                     node.Children.Add(match(Token_Class.Int));
+                    return node;
+                }
+                else if (TokenStream[InputPointer].token_type == Token_Class.Float)
+                {
+                    node.Children.Add(match(Token_Class.Float));
                     return node;
                 }
                 else if (TokenStream[InputPointer + 1].token_type == Token_Class.LParanthesis)
@@ -656,15 +670,60 @@ namespace JASON_Compiler
 
         private Node function_call()
         {
+            // function_call -> identifier "(" function_call_arguments ")"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("function_call");
 
                 node.Children.Add(match(Token_Class.Idenifier));
                 node.Children.Add(match(Token_Class.LParanthesis));
-                node.Children.Add(parameter_list());
+                node.Children.Add(function_call_arguments());
                 node.Children.Add(match(Token_Class.RParanthesis));
 
+                return node;
+            }
+            return null;
+        }
+
+        private Node function_call_arguments()
+        {
+            // function_call_arguments -> identifier function_call_arguments_dash | e
+            if (InputPointer<TokenStream.Count)
+            {
+                Node node = new Node("function_call_arguments");
+
+
+                if (TokenStream[InputPointer].token_type == Token_Class.Idenifier)
+                    node.Children.Add(match(Token_Class.Idenifier));
+                else if (TokenStream[InputPointer].token_type == Token_Class.Int)
+                    node.Children.Add(match(Token_Class.Int));
+
+                node.Children.Add(function_call_arguments_dash());
+                
+
+                return node;
+            }
+            return null;
+        }
+
+        private Node function_call_arguments_dash()
+        {
+            // function_call_arguments_dash -> "," identifier function_call_arguments_dash | e
+            if (InputPointer < TokenStream.Count)
+            {
+                Node node = new Node("function_call_arguments_dash");
+
+                if (TokenStream[InputPointer].token_type == Token_Class.Comma)
+                {
+                    node.Children.Add(match(Token_Class.Comma));
+
+                    if (TokenStream[InputPointer].token_type == Token_Class.Idenifier)
+                        node.Children.Add(match(Token_Class.Idenifier));
+                    else if (TokenStream[InputPointer].token_type == Token_Class.Int)
+                        node.Children.Add(match(Token_Class.Int));
+
+                    node.Children.Add(function_call_arguments_dash());
+                }
                 return node;
             }
             return null;
