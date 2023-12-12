@@ -45,22 +45,27 @@
             this.textBox1.Location = new System.Drawing.Point(14, 28);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox1.Size = new System.Drawing.Size(493, 635);
             this.textBox1.TabIndex = 0;
             // 
             // textBox2
             // 
+            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox2.ForeColor = System.Drawing.Color.White;
             this.textBox2.Location = new System.Drawing.Point(908, 522);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
+            this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox2.Size = new System.Drawing.Size(469, 141);
             this.textBox2.TabIndex = 1;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(564, 593);
+            this.button1.Location = new System.Drawing.Point(522, 594);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(128, 69);
+            this.button1.Size = new System.Drawing.Size(168, 69);
             this.button1.TabIndex = 2;
             this.button1.Text = "Compile !";
             this.button1.UseVisualStyleBackColor = true;
@@ -68,12 +73,15 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
             this.Column2});
             this.dataGridView1.Location = new System.Drawing.Point(522, 28);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(368, 538);
@@ -85,12 +93,14 @@
             this.Column1.HeaderText = "Lexeme";
             this.Column1.MinimumWidth = 8;
             this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
             // 
             // Column2
             // 
             this.Column2.HeaderText = "Token Class";
             this.Column2.MinimumWidth = 8;
             this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
             // 
             // treeView1
             // 
@@ -98,13 +108,14 @@
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(469, 469);
             this.treeView1.TabIndex = 4;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(747, 595);
+            this.button2.Location = new System.Drawing.Point(722, 594);
             this.button2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(112, 65);
+            this.button2.Size = new System.Drawing.Size(168, 69);
             this.button2.TabIndex = 5;
             this.button2.Text = "Clear All";
             this.button2.UseVisualStyleBackColor = true;
@@ -121,6 +132,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

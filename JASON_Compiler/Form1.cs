@@ -20,6 +20,8 @@ namespace JASON_Compiler
         private void button1_Click(object sender, EventArgs e)
         {
             textBox2.Clear();
+            treeView1.Nodes.Clear();
+            dataGridView1.Rows.Clear();
             string Code=textBox1.Text.ToLower();
             JASON_Compiler.Start_Compiling(Code);
             PrintTokens();
@@ -55,6 +57,10 @@ namespace JASON_Compiler
             treeView1.Nodes.Clear();
             Errors.Error_List.Clear();
         }
-        
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
+        }
     }
 }
