@@ -1,18 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net.NetworkInformation;
-using System.Runtime.Hosting;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using System.Xml.Xsl;
 
 namespace JASON_Compiler
 {
@@ -43,7 +31,7 @@ namespace JASON_Compiler
 
         public Node Program()
         {
-            // program -> function_stattement main_function
+            // program -> function_statement main_function
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("program");
@@ -163,8 +151,8 @@ namespace JASON_Compiler
                 node.Children.Add(match(Token_Class.LParanthesis));
                 node.Children.Add(match(Token_Class.RParanthesis));
                 node.Children.Add(function_body());
-                
-                
+
+
                 return node;
             }
             return null;
@@ -277,7 +265,7 @@ namespace JASON_Compiler
         {
             // Declaration_Statement->Datatype identifier declaration_statement_dash;
             // declaration_statement_dash -> "," identifer declaration_statement_dash | Decl_Assignment declaration_statement_dash | ε
-            
+
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("declaration_statement");
@@ -335,27 +323,37 @@ namespace JASON_Compiler
         }
         private Node write_statement()
         {
-            // write_statement -> "write" (expression_statement | "endl") ";"
+            // write_statement -> "write" output ";"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("write_statement");
+                
                 node.Children.Add(match(Token_Class.Write));
-
-                if (TokenStream[InputPointer].token_type == Token_Class.Endl)
-                {
-                    node.Children.Add(match(Token_Class.Endl));
-                }
-                else //expr
-                {
-                    node.Children.Add(expression_statement());
-                }
-
+                node.Children.Add(output());
                 node.Children.Add(match(Token_Class.Semicolon));
 
                 return node;
             }
             return null;
         }
+
+        private Node output()
+        {
+            // output -> expression_statement | "endl"
+            Node node = new Node("output");
+
+            if (TokenStream[InputPointer].token_type == Token_Class.Endl)
+            {
+                node.Children.Add(match(Token_Class.Endl));
+            }
+            else //expr
+            {
+                node.Children.Add(expression_statement());
+            }
+
+            return node;
+        }
+
         private Node read_statement()
         {
             // read_statement -> "read" identifier ";"
@@ -483,31 +481,40 @@ namespace JASON_Compiler
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("condition");
+                
                 node.Children.Add(match(Token_Class.Idenifier));
-
-                if (TokenStream[InputPointer].token_type == Token_Class.LessThanOp)
-                {
-                    node.Children.Add(match(Token_Class.LessThanOp));
-                }
-                else if (TokenStream[InputPointer].token_type == Token_Class.GreaterThanOp)
-                {
-                    node.Children.Add(match(Token_Class.GreaterThanOp));
-                }
-                else if (TokenStream[InputPointer].token_type == Token_Class.EqualOp)
-                {
-                    node.Children.Add(match(Token_Class.EqualOp));
-                }
-                else if (TokenStream[InputPointer].token_type == Token_Class.NotEqualOp)
-                {
-                    node.Children.Add(match(Token_Class.NotEqualOp));
-                }
-
+                node.Children.Add(condition_operator());
                 node.Children.Add(term());
 
                 return node;
             }
             return null;
         }
+
+        private Node condition_operator()
+        {
+            Node node = new Node("condition_operator");
+
+            if (TokenStream[InputPointer].token_type == Token_Class.LessThanOp)
+            {
+                node.Children.Add(match(Token_Class.LessThanOp));
+            }
+            else if (TokenStream[InputPointer].token_type == Token_Class.GreaterThanOp)
+            {
+                node.Children.Add(match(Token_Class.GreaterThanOp));
+            }
+            else if (TokenStream[InputPointer].token_type == Token_Class.EqualOp)
+            {
+                node.Children.Add(match(Token_Class.EqualOp));
+            }
+            else if (TokenStream[InputPointer].token_type == Token_Class.NotEqualOp)
+            {
+                node.Children.Add(match(Token_Class.NotEqualOp));
+            }
+
+            return node;
+        }
+
         private Node boolean_expression()
         {
             // boolean_expression -> "&&" condition_statement | "||" condition_statement | e
@@ -560,7 +567,7 @@ namespace JASON_Compiler
                 return node;
             }
             return null;
-            
+
         }
 
         private Node equation()
@@ -664,6 +671,8 @@ namespace JASON_Compiler
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("term");
+                
+
                 if (TokenStream[InputPointer].token_type == Token_Class.Int)
                 {
                     node.Children.Add(match(Token_Class.Int));
@@ -714,7 +723,7 @@ namespace JASON_Compiler
         private Node function_call_arguments()
         {
             // function_call_arguments -> identifier function_call_arguments_dash | e
-            if (InputPointer<TokenStream.Count)
+            if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("function_call_arguments");
 
