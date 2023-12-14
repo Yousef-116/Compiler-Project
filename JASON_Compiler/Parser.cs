@@ -69,8 +69,11 @@ namespace JASON_Compiler
                     node.Children.Add(function_declaration());
                     node.Children.Add(function_body());
                     node.Children.Add(function_statement());
+                    return node;
                 }
-                return node;
+
+                // e
+                return null;
             }
             return null;
         }
@@ -104,8 +107,11 @@ namespace JASON_Compiler
                     node.Children.Add(DataType());
                     node.Children.Add(match(Token_Class.Idenifier));
                     node.Children.Add(parameter_list_dash());
+                    return node;
                 }
-                return node;
+
+                // e
+                return null;
             }
             return null;
         }
@@ -124,7 +130,9 @@ namespace JASON_Compiler
                     node.Children.Add(parameter_list_dash());
                     return node;
                 }
-                return node;
+
+                // e
+                return null;
             }
             return null;
         }
@@ -203,16 +211,18 @@ namespace JASON_Compiler
                 {
                     node.Children.Add(Statement());
                     node.Children.Add(Statements());
+                    return node;
                 }
 
-                return node;
+                // e
+                return null;
             }
             return null;
         }
 
         private Node Statement()
         {
-            // Statements -> declaration_stmt | assignment_stmt | write_stmt | read_stmt | repeat_stmt | if_stmt | function_call | comment
+            // Statement -> declaration_stmt | assignment_stmt | write_stmt | read_stmt | repeat_stmt | if_stmt | function_call | comment
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("Statement");
@@ -266,8 +276,8 @@ namespace JASON_Compiler
         private Node declaration_statement()
         {
             // Declaration_Statement->Datatype identifier declaration_statement_dash;
-            //Decls-> , identifer Decls | Decl_Assignment Decls | ε
-            //Decl_Assignment-> := Expression 
+            // declaration_statement_dash -> "," identifer declaration_statement_dash | Decl_Assignment declaration_statement_dash | ε
+            
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("declaration_statement");
@@ -292,14 +302,18 @@ namespace JASON_Compiler
                     node.Children.Add(match(Token_Class.Comma));
                     node.Children.Add(match(Token_Class.Idenifier));
                     node.Children.Add(declaration_statement_dash());
+                    return node;
                 }
                 else if (TokenStream[InputPointer].token_type == Token_Class.assignmentOP)
                 {
                     node.Children.Add(match(Token_Class.assignmentOP));
                     node.Children.Add(expression_statement());
                     node.Children.Add(declaration_statement_dash());
+                    return node;
                 }
-                return node;
+
+                // e
+                return null;
             }
             return null;
         }
@@ -405,8 +419,11 @@ namespace JASON_Compiler
                     node.Children.Add(match(Token_Class.Then));
                     node.Children.Add(Statements());
                     node.Children.Add(else_if_statement());
+                    return node;
                 }
-                return node;
+
+                // e
+                return null;
             }
             return null;
         }
@@ -421,9 +438,11 @@ namespace JASON_Compiler
                 {
                     node.Children.Add(match(Token_Class.ELSE));
                     node.Children.Add(Statements());
+                    return node;
                 }
 
-                return node;
+                // e
+                return null;
             }
             return null;
         }
@@ -499,14 +518,17 @@ namespace JASON_Compiler
                 {
                     node.Children.Add(match(Token_Class.ANDOp));
                     node.Children.Add(condition_statement());
+                    return node;
                 }
                 else if (TokenStream[InputPointer].token_type == Token_Class.OROp)
                 {
                     node.Children.Add(match(Token_Class.OROp));
                     node.Children.Add(condition_statement());
+                    return node;
                 }
 
-                return node;
+                // e
+                return null;
             }
             return null;
         }
@@ -608,25 +630,29 @@ namespace JASON_Compiler
                 {
                     node.Children.Add(match(Token_Class.PlusOp));
                     node.Children.Add(equation());
+                    return node;
                 }
                 else if (TokenStream[InputPointer].token_type == Token_Class.MinusOp)
                 {
                     node.Children.Add(match(Token_Class.MinusOp));
                     node.Children.Add(equation());
+                    return node;
                 }
                 else if (TokenStream[InputPointer].token_type == Token_Class.MultiplyOp)
                 {
                     node.Children.Add(match(Token_Class.MultiplyOp));
                     node.Children.Add(equation());
+                    return node;
                 }
                 else if (TokenStream[InputPointer].token_type == Token_Class.DivideOp)
                 {
                     node.Children.Add(match(Token_Class.DivideOp));
                     node.Children.Add(equation());
+                    return node;
                 }
 
-
-                return node;
+                // e
+                return null;
             }
             return null;
         }
@@ -694,14 +720,20 @@ namespace JASON_Compiler
 
 
                 if (TokenStream[InputPointer].token_type == Token_Class.Idenifier)
+                {
                     node.Children.Add(match(Token_Class.Idenifier));
+                    node.Children.Add(function_call_arguments_dash());
+                    return node;
+                }
                 else if (TokenStream[InputPointer].token_type == Token_Class.Int)
+                {
                     node.Children.Add(match(Token_Class.Int));
+                    node.Children.Add(function_call_arguments_dash());
+                    return node;
+                }
 
-                node.Children.Add(function_call_arguments_dash());
-                
-
-                return node;
+                // e
+                return null;
             }
             return null;
         }
@@ -723,8 +755,12 @@ namespace JASON_Compiler
                         node.Children.Add(match(Token_Class.Int));
 
                     node.Children.Add(function_call_arguments_dash());
+
+                    return node;
                 }
-                return node;
+
+                // e
+                return null;
             }
             return null;
         }

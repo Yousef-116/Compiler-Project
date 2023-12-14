@@ -238,8 +238,8 @@ namespace JASON_Compiler
             //comment
             else if (isComment(Lex))
             {
-                Tok.token_type = Token_Class.Comment;
-                Tokens.Add(Tok);
+                //Tok.token_type = Token_Class.Comment;
+                //Tokens.Add(Tok);
             }
 
 
