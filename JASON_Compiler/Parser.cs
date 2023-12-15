@@ -46,21 +46,25 @@ namespace JASON_Compiler
         private Node function_statement()
         {
             // function_statement -> function_declaration function_body function_statement | e
-            if ((InputPointer < TokenStream.Count) && TokenStream[InputPointer + 1].token_type != Token_Class.Main)
+            if (InputPointer + 1 < TokenStream.Count)
             {
-                Node node = new Node("function_statement");
-
-                if (TokenStream[InputPointer].token_type == Token_Class.ReservedWordFLOAT ||
-                    TokenStream[InputPointer].token_type == Token_Class.ReservedWordINT ||
-                    TokenStream[InputPointer].token_type == Token_Class.ReservedWordSTRING)
+                if ((InputPointer < TokenStream.Count) && TokenStream[InputPointer + 1].token_type != Token_Class.Main)
                 {
-                    node.Children.Add(function_declaration());
-                    node.Children.Add(function_body());
-                    node.Children.Add(function_statement());
-                    return node;
-                }
+                    Node node = new Node("function_statement");
 
-                // e
+                    if (TokenStream[InputPointer].token_type == Token_Class.ReservedWordFLOAT ||
+                        TokenStream[InputPointer].token_type == Token_Class.ReservedWordINT ||
+                        TokenStream[InputPointer].token_type == Token_Class.ReservedWordSTRING)
+                    {
+                        node.Children.Add(function_declaration());
+                        node.Children.Add(function_body());
+                        node.Children.Add(function_statement());
+                        return node;
+                    }
+
+                    // e
+                    return null;
+                }
                 return null;
             }
             return null;
@@ -127,35 +131,64 @@ namespace JASON_Compiler
         private Node function_body()
         {
             // function_body -> "{" statements return_statement "}"
-            if (InputPointer < TokenStream.Count)
-            {
-                Node node = new Node("function_body");
+            
+            Node node = new Node("function_body");
 
-                node.Children.Add(match(Token_Class.LCurlybracket));
-                node.Children.Add(Statements());
-                node.Children.Add(return_statement());
-                node.Children.Add(match(Token_Class.RCurlybracket));
-                return node;
+            Node tempLCurlyNode = match(Token_Class.LCurlybracket);
+            if (tempLCurlyNode == null)
+                return null;
+
+            node.Children.Add(tempLCurlyNode);
+
+            node.Children.Add(Statements());
+
+            Node tempReturnNode = return_statement();
+            if (tempReturnNode == null)
+            {
+                InputPointer--;
+                //return node;
             }
-            return null;
+            node.Children.Add(tempReturnNode);
+
+            Node tempRCurlyNode = match(Token_Class.RCurlybracket);
+            if (tempRCurlyNode == null)
+                return node;
+            node.Children.Add(tempRCurlyNode);
+
+            return node;
+            
         }
         private Node main_function()
         {
             // main_function -> DataType "main" "(" ")" function_body
-            if (InputPointer < TokenStream.Count)
-            {
-                Node node = new Node("main_function");
+           
+            Node node = new Node("main_function");
 
-                node.Children.Add(DataType());
-                node.Children.Add(match(Token_Class.Main));
-                node.Children.Add(match(Token_Class.LParanthesis));
-                node.Children.Add(match(Token_Class.RParanthesis));
-                node.Children.Add(function_body());
+            node.Children.Add(DataType());
 
+            Node tempMainNode = match(Token_Class.Main);
+            if (tempMainNode == null)
+                return null;
+            node.Children.Add(tempMainNode);
 
+            Node tempLParanthesisNode = match(Token_Class.LParanthesis);
+            if (tempLParanthesisNode == null)
                 return node;
-            }
-            return null;
+            node.Children.Add(tempLParanthesisNode);
+
+            Node tempRParanthesisNode = match(Token_Class.RParanthesis);
+            if (tempRParanthesisNode == null)
+                return node;
+            node.Children.Add(tempRParanthesisNode);
+
+            Node tempFunctionBodyNode = function_body();
+            if (tempFunctionBodyNode == null) 
+                return node;
+            node.Children.Add(tempFunctionBodyNode);
+
+
+            return node;
+            
         }
 
         private Node DataType()
@@ -447,17 +480,24 @@ namespace JASON_Compiler
         private Node return_statement()
         {
             // return_statement -> "return" expression_statement ";"
-            if (InputPointer < TokenStream.Count)
-            {
-                Node node = new Node("return_statement");
+            
+            Node node = new Node("return_statement");
 
-                node.Children.Add(match(Token_Class.Return));
-                node.Children.Add(expression_statement());
-                node.Children.Add(match(Token_Class.Semicolon));
+            Node tempReturnNode = match(Token_Class.Return);
+            if (tempReturnNode == null)
+                return null;
 
+            node.Children.Add(tempReturnNode);
+
+            node.Children.Add(expression_statement());
+
+            Node tempSemiColonNode = match(Token_Class.Semicolon);
+            if (tempSemiColonNode == null)
                 return node;
-            }
-            return null;
+            node.Children.Add(tempSemiColonNode);
+
+            return node;
+            
         }
 
 
@@ -671,18 +711,14 @@ namespace JASON_Compiler
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("term");
-                
 
-                if (TokenStream[InputPointer].token_type == Token_Class.Int)
+
+                if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float)
                 {
-                    node.Children.Add(match(Token_Class.Int));
+                    node.Children.Add(number());
                     return node;
                 }
-                else if (TokenStream[InputPointer].token_type == Token_Class.Float)
-                {
-                    node.Children.Add(match(Token_Class.Float));
-                    return node;
-                }
+
                 else if (TokenStream[InputPointer + 1].token_type == Token_Class.LParanthesis)
                 {
                     node.Children.Add(function_call());
@@ -700,8 +736,27 @@ namespace JASON_Compiler
             return null;
         }
 
+        private Node number()
+        {
+            if (InputPointer < TokenStream.Count)
+            {
+                Node node = new Node("number");
 
+                if (TokenStream[InputPointer].token_type == Token_Class.Int)
+                {
+                    node.Children.Add(match(Token_Class.Int));
+                    return node;
+                }
+                else if (TokenStream[InputPointer].token_type == Token_Class.Float)
+                {
+                    node.Children.Add(match(Token_Class.Float));
+                    return node;
+                }
 
+                return node;
+            }
+            return null;
+        }
 
         private Node function_call()
         {
