@@ -504,7 +504,7 @@ namespace JASON_Compiler
         }
         private Node condition()
         {
-            // condition -> identifier (< | > | == | <>) term
+            // condition -> identifier condition_operator term
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("condition");
@@ -520,6 +520,7 @@ namespace JASON_Compiler
 
         private Node condition_operator()
         {
+            // condition_pperator -> < | > | = | <>
             Node node = new Node("condition_operator");
 
             if (TokenStream[InputPointer].token_type == Token_Class.LessThanOp)
@@ -599,11 +600,10 @@ namespace JASON_Compiler
 
         private Node equation()
         {
-            //Equation->bracket | non-bracket
-            //non-bracket->term equation_arithmetic_part
-            //bracket-> (term equation_arithmetic_part)
-            //equation_arithmetic_part->Arithemtic_Operator Equation | ε 
-
+            // Equation->bracket | non-bracket
+            // non-bracket -> term equation_arithmetic_part
+            // bracket -> "(" term equation_arithmetic_part ")"
+            // equation_arithmetic_part -> Arithemtic_Operator Equation | ε 
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("equation");
@@ -621,7 +621,7 @@ namespace JASON_Compiler
         }
         private Node bracket_equation()
         {
-            //bracket-> (term equation_arithmetic_part)
+            // bracket -> "(" term equation_arithmetic_part ")"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("bracket_equation");
@@ -641,7 +641,7 @@ namespace JASON_Compiler
 
         private Node non_bracket_equation()
         {
-            //non-bracket->term equation_arithmetic_part
+            // non-bracket -> term equation_arithmetic_part
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("non_bracket_equation");
@@ -655,8 +655,7 @@ namespace JASON_Compiler
         }
         private Node equation_arithmetic_part()
         {
-            //equation_arithmetic_part->Arithemtic_Operator Equation | ε 
-
+            // equation_arithmetic_part -> Arithemtic_Operator Equation | ε 
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("equation_arithmetic_part");
