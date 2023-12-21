@@ -570,7 +570,7 @@ namespace JASON_Compiler
         private Node expression_statement()
         {
             // expression_statement -> string | term | equation
-            if (InputPointer < TokenStream.Count)
+            if (InputPointer + 1 < TokenStream.Count)
             {
                 Node node = new Node("expression_statement");
                 if (TokenStream[InputPointer].token_type == Token_Class.String)
@@ -582,7 +582,8 @@ namespace JASON_Compiler
                     (TokenStream[InputPointer + 1].token_type == Token_Class.PlusOp ||
                      TokenStream[InputPointer + 1].token_type == Token_Class.MinusOp ||
                      TokenStream[InputPointer + 1].token_type == Token_Class.MultiplyOp ||
-                     TokenStream[InputPointer + 1].token_type == Token_Class.DivideOp))
+                     TokenStream[InputPointer + 1].token_type == Token_Class.DivideOp ||
+                     TokenStream[InputPointer + 1].token_type == Token_Class.LParanthesis))
                 {
                     node.Children.Add(equation());
                 }
@@ -694,10 +695,9 @@ namespace JASON_Compiler
         private Node term()
         {
             // term -> number | identifier | function_call
-            if (InputPointer < TokenStream.Count)
+            if (InputPointer + 1 < TokenStream.Count)
             {
                 Node node = new Node("term");
-
 
                 if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float)
                 {
@@ -828,7 +828,7 @@ namespace JASON_Compiler
 
             if (InputPointer < TokenStream.Count)
             {
-
+                
                 if (ExpectedToken == TokenStream[InputPointer].token_type)
                 {
                     InputPointer++;
