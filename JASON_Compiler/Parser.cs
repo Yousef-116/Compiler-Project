@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace JASON_Compiler
+namespace Tiny_Compiler
 {
     public class Node
     {
@@ -17,7 +17,7 @@ namespace JASON_Compiler
     public class Parser
     {
         int InputPointer = 0;
-        List<Token> TokenStream = JASON_Compiler.Jason_Scanner.Tokens;
+        List<Token> TokenStream = Tiny_Compiler.Tiny_Scanner.Tokens;
         public Node root;
 
         public Node StartParsing(List<Token> TokenStream)

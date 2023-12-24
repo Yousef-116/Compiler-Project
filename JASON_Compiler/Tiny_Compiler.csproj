@@ -7,8 +7,8 @@
     <ProjectGuid>{317C883A-1AD2-4BF5-8033-D7C695787623}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JASON_Compiler</RootNamespace>
-    <AssemblyName>JASON_Compiler</AssemblyName>
+    <RootNamespace>Tiny_Compiler</RootNamespace>
+    <AssemblyName>Tiny_Compiler</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -60,7 +60,7 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
-    <Compile Include="JASON_Compiler.cs" />
+    <Compile Include="Tiny_Compiler.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -18,7 +18,7 @@ public enum Token_Class
     OROp,ANDOp , Repeat, Main ,
     LCurlybracket, RCurlybracket  , Endl, Colon , Dot  , Declare , Int , Float
 }
-namespace JASON_Compiler
+namespace Tiny_Compiler
 {
     public class Token
     {
@@ -185,7 +185,7 @@ namespace JASON_Compiler
                 }
             }
 
-            JASON_Compiler.TokenStream = Tokens;
+            Tiny_Compiler.TokenStream = Tokens;
         }
         void FindTokenClass(string Lex)
         {
