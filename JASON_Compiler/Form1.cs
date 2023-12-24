@@ -19,6 +19,12 @@ namespace JASON_Compiler
 
         private void button1_Click(object sender, EventArgs e)
         {
+            //textBox1.Text = "";
+            textBox2.Text = "";
+            JASON_Compiler.TokenStream.Clear();
+            dataGridView1.Rows.Clear();
+            treeView1.Nodes.Clear();
+            Errors.Error_List.Clear();
             textBox2.Clear();
             treeView1.Nodes.Clear();
             dataGridView1.Rows.Clear();
@@ -59,6 +65,11 @@ namespace JASON_Compiler
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
+        }
+
+       private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }
