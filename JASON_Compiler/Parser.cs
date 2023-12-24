@@ -339,7 +339,7 @@ namespace JASON_Compiler
         }
         private Node assignment_statement()
         {
-            // assignment_statement -> identifier ":=" expression_statement ":"
+            // assignment_statement -> identifier ":=" expression_statement ";"
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("assignment_statement");
@@ -628,7 +628,7 @@ namespace JASON_Compiler
         {
             // Equation->bracket | non-bracket
             // non-bracket -> term equation_arithmetic_part
-            // bracket -> "(" term equation_arithmetic_part ")"
+            // bracket -> "(" term equation_arithmetic_part ")" equation_arithmetic_part
             // equation_arithmetic_part -> Arithemtic_Operator Equation | ε 
             if (InputPointer + 1 < TokenStream.Count)
             {
@@ -701,37 +701,56 @@ namespace JASON_Compiler
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("equation_arithmetic_part");
-                if (TokenStream[InputPointer].token_type == Token_Class.PlusOp)
+                if (TokenStream[InputPointer].token_type == Token_Class.PlusOp ||
+                   TokenStream[InputPointer].token_type == Token_Class.MinusOp ||
+                   TokenStream[InputPointer].token_type == Token_Class.MultiplyOp ||
+                   TokenStream[InputPointer].token_type == Token_Class.DivideOp)
                 {
-                    node.Children.Add(match(Token_Class.PlusOp));
+                    node.Children.Add(Arithmetic_Operator());
                     node.Children.Add(equation());
                     return node;
                 }
-                else if (TokenStream[InputPointer].token_type == Token_Class.MinusOp)
-                {
-                    node.Children.Add(match(Token_Class.MinusOp));
-                    node.Children.Add(equation());
-                    return node;
-                }
-                else if (TokenStream[InputPointer].token_type == Token_Class.MultiplyOp)
-                {
-                    node.Children.Add(match(Token_Class.MultiplyOp));
-                    node.Children.Add(equation());
-                    return node;
-                }
-                else if (TokenStream[InputPointer].token_type == Token_Class.DivideOp)
-                {
-                    node.Children.Add(match(Token_Class.DivideOp));
-                    node.Children.Add(equation());
-                    return node;
-                }
-
                 // e
                 return null;
             }
             return null;
         }
 
+        private Node Arithmetic_Operator()
+        {
+            if (InputPointer >= TokenStream.Count)
+            {
+                return null;
+            }
+            Node node = new Node("Arithemtic_Operator");
+            if (TokenStream[InputPointer].token_type == Token_Class.PlusOp)
+            {
+                node.Children.Add(match(Token_Class.PlusOp));
+                //return node;
+            }
+            else if (TokenStream[InputPointer].token_type == Token_Class.MinusOp)
+            {
+                node.Children.Add(match(Token_Class.MinusOp));
+                //return node;
+            }
+            else if (TokenStream[InputPointer].token_type == Token_Class.MultiplyOp)
+            {
+                node.Children.Add(match(Token_Class.MultiplyOp));
+                //return node;
+            }
+            else if (TokenStream[InputPointer].token_type == Token_Class.DivideOp)
+            {
+                node.Children.Add(match(Token_Class.DivideOp));
+               // return node;
+            }
+            else
+            {
+                Errors.Error_List.Add("Parsing Error: Expected  Arithemitc_Operator  and " + TokenStream[InputPointer].token_type + " found\r\n");
+                InputPointer++;
+                return null;
+            }
+            return node;
+        }
 
         private Node term()
         {
