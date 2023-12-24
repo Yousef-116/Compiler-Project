@@ -39,6 +39,12 @@ namespace JASON_Compiler
                 node.Children.Add(function_statement());
                 node.Children.Add(main_function());
 
+                while (InputPointer < TokenStream.Count)
+                {
+                    Errors.Error_List.Add("Parsing Error: Expected Nothing and " + TokenStream[InputPointer].token_type + " found\r\n");
+                    InputPointer++;
+                }
+
                 return node;
             }
             return null;
@@ -208,6 +214,12 @@ namespace JASON_Compiler
                 else if (TokenStream[InputPointer].token_type == Token_Class.ReservedWordSTRING)
                 {
                     node.Children.Add(match(Token_Class.ReservedWordSTRING));
+                }
+                else // empty
+                {
+                    Errors.Error_List.Add("Parsing Error: Expected DataType and " + TokenStream[InputPointer].token_type + " found");
+                    InputPointer++;
+                    return null;
                 }
                 return node;
             }
@@ -539,6 +551,12 @@ namespace JASON_Compiler
             {
                 node.Children.Add(match(Token_Class.NotEqualOp));
             }
+            else // empty
+            {
+                Errors.Error_List.Add("Parsing Error: Expected ConditionOperator and "+ TokenStream[InputPointer].token_type + " found\r\n");
+                InputPointer++;
+                return null;
+            }
 
             return node;
         }
@@ -577,7 +595,7 @@ namespace JASON_Compiler
                 {
                     node.Children.Add(match(Token_Class.String));
                 }
-                // equation
+                // equation -> bracket | non bracket | func_call
                 else if (TokenStream[InputPointer].token_type == Token_Class.LParanthesis ||
                     (TokenStream[InputPointer + 1].token_type == Token_Class.PlusOp ||
                      TokenStream[InputPointer + 1].token_type == Token_Class.MinusOp ||
@@ -587,10 +605,17 @@ namespace JASON_Compiler
                 {
                     node.Children.Add(equation());
                 }
-                // term
-                else
+                // term -> number | identifier 
+                else if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float ||
+                         TokenStream[InputPointer].token_type == Token_Class.Idenifier)
                 {
                     node.Children.Add(term());
+                }
+                else // empty
+                {
+                    Errors.Error_List.Add("Parsing Error: Expected ExpressionStatement and " + TokenStream[InputPointer].token_type + " found\r\n");
+                    InputPointer++;
+                    return null;
                 }
 
                 return node;
@@ -605,17 +630,27 @@ namespace JASON_Compiler
             // non-bracket -> term equation_arithmetic_part
             // bracket -> "(" term equation_arithmetic_part ")"
             // equation_arithmetic_part -> Arithemtic_Operator Equation | ε 
-            if (InputPointer < TokenStream.Count)
+            if (InputPointer + 1 < TokenStream.Count)
             {
                 Node node = new Node("equation");
                 if (TokenStream[InputPointer].token_type == Token_Class.LParanthesis)
                 {
                     node.Children.Add(bracket_equation());
                 }
-                else
+                // term
+                else if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float ||
+                         TokenStream[InputPointer].token_type == Token_Class.Idenifier ||
+                         TokenStream[InputPointer + 1].token_type == Token_Class.LParanthesis)
                 {
                     node.Children.Add(non_bracket_equation());
                 }
+                else
+                {
+                    Errors.Error_List.Add("Parsing Error: Expected Equation and " + TokenStream[InputPointer].token_type + " found\r\n");
+                    InputPointer++;
+                    return null;
+                }
+            
                 return node;
             }
             return null;
@@ -633,6 +668,12 @@ namespace JASON_Compiler
                     node.Children.Add(equation_arithmetic_part());
                     node.Children.Add(match(Token_Class.RParanthesis));
                     node.Children.Add(equation_arithmetic_part());
+                }
+                else
+                {
+                    Errors.Error_List.Add("Parsing Error: Expected " +  Token_Class.LParanthesis + " and " + TokenStream[InputPointer].token_type + " found\r\n");
+                    InputPointer++;
+                    return null;
                 }
                 return node;
             }
@@ -699,31 +740,39 @@ namespace JASON_Compiler
             {
                 Node node = new Node("term");
 
+                // number
                 if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float)
                 {
                     node.Children.Add(number());
                     return node;
                 }
 
+                // func_call
                 else if (TokenStream[InputPointer + 1].token_type == Token_Class.LParanthesis)
                 {
                     node.Children.Add(function_call());
                     return node;
                 }
+                // identifier
                 else if (TokenStream[InputPointer].token_type == Token_Class.Idenifier)
                 {
                     node.Children.Add(match(Token_Class.Idenifier));
                     return node;
                 }
+                else
+                {
+                    Errors.Error_List.Add("Parsing Error: Expected Term and " + TokenStream[InputPointer].token_type + " found\r\n");
+                    InputPointer++;
+                    return null;
+                }
 
-                //MessageBox.Show("Error in term - token not number or identifier or func_call");
-                return null;
             }
             return null;
         }
 
         private Node number()
         {
+            // number -> int | float
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("number");
@@ -738,8 +787,13 @@ namespace JASON_Compiler
                     node.Children.Add(match(Token_Class.Float));
                     return node;
                 }
+                else
+                {
+                    Errors.Error_List.Add("Parsing Error: Expected Number and " + TokenStream[InputPointer].token_type + " found\r\n");
+                    InputPointer++;
+                    return null;
+                }
 
-                return node;
             }
             return null;
         }
@@ -803,6 +857,12 @@ namespace JASON_Compiler
                         node.Children.Add(match(Token_Class.Idenifier));
                     else if (TokenStream[InputPointer].token_type == Token_Class.Int)
                         node.Children.Add(match(Token_Class.Int));
+                    else
+                    {
+                        Errors.Error_List.Add("Parsing Error: Expected " + Token_Class.Idenifier + " and " + TokenStream[InputPointer].token_type + " found\r\n");
+                        InputPointer++;
+                        return null;
+                    }
 
                     node.Children.Add(function_call_arguments_dash());
 
