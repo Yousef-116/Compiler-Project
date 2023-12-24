@@ -255,7 +255,7 @@ namespace JASON_Compiler
 
         private Node Statement()
         {
-            // Statement -> declaration_stmt | assignment_stmt | write_stmt | read_stmt | repeat_stmt | if_stmt
+            // Statement -> declaration_stmt | assignment_stmt | write_stmt | read_stmt | repeat_stmt | if_stmt | functioncall_stmt
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("Statement");
@@ -265,6 +265,10 @@ namespace JASON_Compiler
                 {
                     node.Children.Add(declaration_statement());
 
+                }
+                else if (TokenStream[InputPointer+1].token_type ==  Token_Class.LParanthesis)
+                {
+                    node.Children.Add(function_call_statement());
                 }
                 // assignment_statement
                 else if (TokenStream[InputPointer].token_type == Token_Class.Idenifier)
@@ -287,12 +291,26 @@ namespace JASON_Compiler
                 {
                     node.Children.Add(if_statement());
                 }
+
                
 
                 return node;
             }
             return null;
         }
+
+        private Node function_call_statement()
+        {
+            if(InputPointer >= TokenStream.Count) 
+            {
+                return null;
+            }
+            Node node = new Node("function_call_statement");
+            node.Children.Add(function_call());
+            node.Children.Add(match(Token_Class.Semicolon));
+            return node;
+        }
+
         private Node declaration_statement()
         {
             // Declaration_Statement->Datatype identifier declaration_statement_dash;
