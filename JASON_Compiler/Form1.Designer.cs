@@ -1,4 +1,4 @@
-﻿namespace JASON_Compiler
+﻿namespace Tiny_Compiler
 {
     partial class Form1
     {

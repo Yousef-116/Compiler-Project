@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace JASON_Compiler
+namespace Tiny_Compiler
 {
     public partial class Form1 : Form
     {
@@ -21,7 +21,7 @@ namespace JASON_Compiler
         {
             //textBox1.Text = "";
             textBox2.Text = "";
-            JASON_Compiler.TokenStream.Clear();
+            Tiny_Compiler.TokenStream.Clear();
             dataGridView1.Rows.Clear();
             treeView1.Nodes.Clear();
             Errors.Error_List.Clear();
@@ -29,16 +29,16 @@ namespace JASON_Compiler
             treeView1.Nodes.Clear();
             dataGridView1.Rows.Clear();
             string Code=textBox1.Text.ToLower();
-            JASON_Compiler.Start_Compiling(Code);
+            Tiny_Compiler.Start_Compiling(Code);
             PrintTokens();
-            treeView1.Nodes.Add(Parser.PrintParseTree(JASON_Compiler.treeroot));
+            treeView1.Nodes.Add(Parser.PrintParseTree(Tiny_Compiler.treeroot));
             PrintErrors();
         }
         void PrintTokens()
         {
-            for (int i = 0; i < JASON_Compiler.Jason_Scanner.Tokens.Count; i++)
+            for (int i = 0; i < Tiny_Compiler.Tiny_Scanner.Tokens.Count; i++)
             {
-               dataGridView1.Rows.Add(JASON_Compiler.Jason_Scanner.Tokens.ElementAt(i).lex, JASON_Compiler.Jason_Scanner.Tokens.ElementAt(i).token_type);
+               dataGridView1.Rows.Add(Tiny_Compiler.Tiny_Scanner.Tokens.ElementAt(i).lex, Tiny_Compiler.Tiny_Scanner.Tokens.ElementAt(i).token_type);
             }
         }
 
@@ -58,7 +58,7 @@ namespace JASON_Compiler
         {
             textBox1.Text = "";
             textBox2.Text = "";
-            JASON_Compiler.TokenStream.Clear();
+            Tiny_Compiler.TokenStream.Clear();
             dataGridView1.Rows.Clear();
             treeView1.Nodes.Clear();
             Errors.Error_List.Clear();
