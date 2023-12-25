@@ -134,10 +134,11 @@ namespace Tiny_Compiler
             }
             return null;
         }
+        bool _Return;
         private Node function_body()
         {
             // function_body -> "{" statements return_statement "}"
-            
+            _Return = false;
             Node node = new Node("function_body");
 
             Node tempLCurlyNode = match(Token_Class.LCurlybracket);
@@ -148,17 +149,21 @@ namespace Tiny_Compiler
 
             node.Children.Add(Statements());
 
-            Node tempReturnNode = return_statement();
-            if (tempReturnNode == null)
-            {
-                InputPointer--;
-                //return node;
-            }
-            node.Children.Add(tempReturnNode);
+            //Node tempReturnNode = return_statement();
+            //if (tempReturnNode == null)
+            //{
+            //    InputPointer--;
+            //    //return node;
+            //}
+            //node.Children.Add(tempReturnNode);
 
             Node tempRCurlyNode = match(Token_Class.RCurlybracket);
             if (tempRCurlyNode == null)
                 return node;
+            else if(_Return == false)
+            {
+                Errors.Error_List.Add("Parsing Error: Return statement not found\r\n");
+            }
             node.Children.Add(tempRCurlyNode);
 
             return node;
@@ -240,7 +245,8 @@ namespace Tiny_Compiler
                 TokenStream[InputPointer].token_type == Token_Class.Read ||
                 TokenStream[InputPointer].token_type == Token_Class.Repeat ||
                 TokenStream[InputPointer].token_type == Token_Class.If ||
-                TokenStream[InputPointer].token_type == Token_Class.Comment)
+                TokenStream[InputPointer].token_type == Token_Class.Comment ||
+                TokenStream[InputPointer].token_type == Token_Class.Return )
                 {
                     node.Children.Add(Statement());
                     node.Children.Add(Statements());
@@ -290,6 +296,15 @@ namespace Tiny_Compiler
                 else if (TokenStream[InputPointer].token_type == Token_Class.If)
                 {
                     node.Children.Add(if_statement());
+                }
+                else if (TokenStream[InputPointer].token_type == Token_Class.Return)
+                {
+                    Node tempReturnNode = return_statement();
+                    if (tempReturnNode != null)
+                    {
+                        _Return = true;
+                        node.Children.Add(tempReturnNode);
+                    }
                 }
 
                
@@ -941,7 +956,7 @@ namespace Tiny_Compiler
                         + ExpectedToken.ToString() + " and " +
                         TokenStream[InputPointer].token_type.ToString() +
                         "  found\r\n");
-                    InputPointer++;
+                    //InputPointer++;
                     return null;
                 }
             }
