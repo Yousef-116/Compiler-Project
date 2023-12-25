@@ -58,9 +58,9 @@ namespace Tiny_Compiler
                 {
                     Node node = new Node("function_statement");
 
-                    if (TokenStream[InputPointer].token_type == Token_Class.ReservedWordFLOAT ||
+                    if ((TokenStream[InputPointer].token_type == Token_Class.ReservedWordFLOAT ||
                         TokenStream[InputPointer].token_type == Token_Class.ReservedWordINT ||
-                        TokenStream[InputPointer].token_type == Token_Class.ReservedWordSTRING)
+                        TokenStream[InputPointer].token_type == Token_Class.ReservedWordSTRING) || TokenStream[InputPointer+1].token_type == Token_Class.Idenifier)
                     {
                         node.Children.Add(function_declaration());
                         node.Children.Add(function_body());
