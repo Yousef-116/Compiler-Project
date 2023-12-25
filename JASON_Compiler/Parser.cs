@@ -141,19 +141,19 @@ namespace Tiny_Compiler
             Node node = new Node("function_body");
 
             Node tempLCurlyNode = match(Token_Class.LCurlybracket);
-            //if (tempLCurlyNode == null)
-            //    return null;
+            if (tempLCurlyNode == null)
+            return null;
 
             node.Children.Add(tempLCurlyNode);
 
             node.Children.Add(Statements());
 
             Node tempReturnNode = return_statement();
-            //if (tempReturnNode == null)
-            //{
-            //    InputPointer--;
-            //    //return node;
-            //}
+            if (tempReturnNode == null)
+            {
+                //InputPointer--;
+                //return node;
+            }
             node.Children.Add(tempReturnNode);
 
             Node tempRCurlyNode = match(Token_Class.RCurlybracket);
@@ -174,8 +174,8 @@ namespace Tiny_Compiler
             node.Children.Add(DataType());
 
             Node tempMainNode = match(Token_Class.Main);
-            //if (tempMainNode == null)
-            //    return null;
+            if (tempMainNode == null)
+                return null;
             node.Children.Add(tempMainNode);
 
             Node tempLParanthesisNode = match(Token_Class.LParanthesis);
@@ -506,8 +506,8 @@ namespace Tiny_Compiler
             Node node = new Node("return_statement");
 
             Node tempReturnNode = match(Token_Class.Return);
-            //if (tempReturnNode == null)
-            //    return null;
+            if (tempReturnNode == null)
+                return null;
 
             node.Children.Add(tempReturnNode);
 
