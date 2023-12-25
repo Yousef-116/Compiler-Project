@@ -606,7 +606,7 @@ namespace Tiny_Compiler
         private Node expression_statement()
         {
             // expression_statement -> string | term | equation
-            if (InputPointer + 1 < TokenStream.Count)
+            if (InputPointer + 2 < TokenStream.Count)
             {
                 Node node = new Node("expression_statement");
                 if (TokenStream[InputPointer].token_type == Token_Class.String)
@@ -624,10 +624,25 @@ namespace Tiny_Compiler
                     node.Children.Add(equation());
                 }
                 // term -> number | identifier 
-                else if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float ||
-                         TokenStream[InputPointer].token_type == Token_Class.Idenifier)
+                else if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float || // number
+                         TokenStream[InputPointer].token_type == Token_Class.Idenifier) // identifier
                 {
                     node.Children.Add(term());
+                }
+
+                // negative number
+                else if (TokenStream[InputPointer].token_type == Token_Class.MinusOp && 
+                         TokenStream[InputPointer + 1].token_type == Token_Class.Int || TokenStream[InputPointer + 1].token_type == Token_Class.Float) 
+                {
+                    if (TokenStream[InputPointer + 2].token_type == Token_Class.PlusOp || 
+                        TokenStream[InputPointer + 2].token_type == Token_Class.MinusOp || 
+                        TokenStream[InputPointer + 2].token_type == Token_Class.DivideOp ||
+                        TokenStream[InputPointer + 2].token_type == Token_Class.MultiplyOp)
+                    {
+                        node.Children.Add(equation());
+                    }
+                    else
+                        node.Children.Add(term());
                 }
                 else // empty
                 {
@@ -658,7 +673,7 @@ namespace Tiny_Compiler
                 // term
                 else if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float ||
                          TokenStream[InputPointer].token_type == Token_Class.Idenifier ||
-                         TokenStream[InputPointer + 1].token_type == Token_Class.LParanthesis)
+                         TokenStream[InputPointer + 1].token_type == Token_Class.LParanthesis || TokenStream[InputPointer].token_type == Token_Class.MinusOp)
                 {
                     node.Children.Add(non_bracket_equation());
                 }
@@ -777,8 +792,16 @@ namespace Tiny_Compiler
             {
                 Node node = new Node("term");
 
+                // negative number
+                if (TokenStream[InputPointer].token_type == Token_Class.MinusOp &&
+                    (TokenStream[InputPointer + 1].token_type == Token_Class.Int || TokenStream[InputPointer + 1].token_type == Token_Class.Float))
+                {
+                    node.Children.Add(number());
+                    return node;
+                }
+
                 // number
-                if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float)
+                else if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float)
                 {
                     node.Children.Add(number());
                     return node;
@@ -813,6 +836,14 @@ namespace Tiny_Compiler
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("number");
+
+                // negative number
+                if (TokenStream[InputPointer].token_type == Token_Class.MinusOp &&
+                    (TokenStream[InputPointer + 1].token_type == Token_Class.Int || TokenStream[InputPointer + 1].token_type == Token_Class.Float))
+                {
+                    node.Children.Add(match(Token_Class.MinusOp));
+                }
+
 
                 if (TokenStream[InputPointer].token_type == Token_Class.Int)
                 {
@@ -866,9 +897,11 @@ namespace Tiny_Compiler
                     node.Children.Add(function_call_arguments_dash());
                     return node;
                 }
-                else if (TokenStream[InputPointer].token_type == Token_Class.Int)
+                else if (TokenStream[InputPointer].token_type == Token_Class.Int || TokenStream[InputPointer].token_type == Token_Class.Float || // number
+                         (TokenStream[InputPointer].token_type == Token_Class.MinusOp && // negative number
+                         TokenStream[InputPointer + 1].token_type == Token_Class.Int || TokenStream[InputPointer + 1].token_type == Token_Class.Float)) // negative number
                 {
-                    node.Children.Add(match(Token_Class.Int));
+                    node.Children.Add(number());
                     node.Children.Add(function_call_arguments_dash());
                     return node;
                 }
