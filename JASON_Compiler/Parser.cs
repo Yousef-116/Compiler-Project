@@ -256,7 +256,7 @@ namespace Tiny_Compiler
         private Node Statement()
         {
             // Statement -> declaration_stmt | assignment_stmt | write_stmt | read_stmt | repeat_stmt | if_stmt | functioncall_stmt
-            if (InputPointer < TokenStream.Count)
+            if (InputPointer + 1 < TokenStream.Count)
             {
                 Node node = new Node("Statement");
                 if (TokenStream[InputPointer].token_type == Token_Class.ReservedWordFLOAT ||
