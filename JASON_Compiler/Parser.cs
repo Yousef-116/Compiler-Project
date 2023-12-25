@@ -956,7 +956,7 @@ namespace Tiny_Compiler
                         + ExpectedToken.ToString() + " and " +
                         TokenStream[InputPointer].token_type.ToString() +
                         "  found\r\n");
-                    //InputPointer++;
+                    InputPointer++;
                     return null;
                 }
             }
