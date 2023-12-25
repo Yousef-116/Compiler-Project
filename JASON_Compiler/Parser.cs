@@ -517,7 +517,15 @@ namespace Tiny_Compiler
             //if (tempSemiColonNode == null)
             //    return node;
             node.Children.Add(tempSemiColonNode);
-
+            while (TokenStream[InputPointer].token_type == Token_Class.Semicolon)
+            {
+                {
+                    Errors.Error_List.Add("Parsing Error: Expected Nothing and " + TokenStream[InputPointer].token_type + " found");
+                    //InputPointer++;
+                    InputPointer++;
+                    //return null;
+                }
+            }
             return node;
             
         }
