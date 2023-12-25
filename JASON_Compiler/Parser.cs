@@ -58,9 +58,9 @@ namespace Tiny_Compiler
                 {
                     Node node = new Node("function_statement");
 
-                    if (TokenStream[InputPointer].token_type == Token_Class.ReservedWordFLOAT ||
+                    if ((TokenStream[InputPointer].token_type == Token_Class.ReservedWordFLOAT ||
                         TokenStream[InputPointer].token_type == Token_Class.ReservedWordINT ||
-                        TokenStream[InputPointer].token_type == Token_Class.ReservedWordSTRING)
+                        TokenStream[InputPointer].token_type == Token_Class.ReservedWordSTRING) || TokenStream[InputPointer+1].token_type == Token_Class.Idenifier)
                     {
                         node.Children.Add(function_declaration());
                         node.Children.Add(function_body());
@@ -219,7 +219,7 @@ namespace Tiny_Compiler
                 else // empty
                 {
                     Errors.Error_List.Add("Parsing Error: Expected DataType and " + TokenStream[InputPointer].token_type + " found");
-                    //InputPointer++;
+                    InputPointer++;
                     return null;
                 }
                 return node;
@@ -517,11 +517,10 @@ namespace Tiny_Compiler
             //if (tempSemiColonNode == null)
             //    return node;
             node.Children.Add(tempSemiColonNode);
-            while (TokenStream[InputPointer].token_type == Token_Class.Semicolon)
+            while (TokenStream[InputPointer].token_type != Token_Class.RCurlybracket)
             {
                 {
                     Errors.Error_List.Add("Parsing Error: Expected Nothing and " + TokenStream[InputPointer].token_type + " found");
-                    //InputPointer++;
                     InputPointer++;
                     //return null;
                 }
