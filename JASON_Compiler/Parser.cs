@@ -42,7 +42,7 @@ namespace Tiny_Compiler
                 while (InputPointer < TokenStream.Count)
                 {
                     Errors.Error_List.Add("Parsing Error: Expected Nothing and " + TokenStream[InputPointer].token_type + " found\r\n");
-                    //InputPointer++;
+                    InputPointer++;
                 }
 
                 return node;
