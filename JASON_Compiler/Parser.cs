@@ -446,6 +446,10 @@ namespace Tiny_Compiler
                 node.Children.Add(condition_statement());
                 node.Children.Add(match(Token_Class.Then));
                 node.Children.Add(Statements());
+                if (TokenStream[InputPointer].token_type == Token_Class.Return) 
+                {
+                    node.Children.Add(return_statement());
+                }
                 node.Children.Add(else_if_statement());
                 node.Children.Add(else_statement());
                 node.Children.Add(match(Token_Class.End));
@@ -466,6 +470,10 @@ namespace Tiny_Compiler
                     node.Children.Add(condition_statement());
                     node.Children.Add(match(Token_Class.Then));
                     node.Children.Add(Statements());
+                    if (TokenStream[InputPointer].token_type == Token_Class.Return)
+                    {
+                        node.Children.Add(return_statement());
+                    }
                     node.Children.Add(else_if_statement());
                     return node;
                 }
@@ -486,6 +494,10 @@ namespace Tiny_Compiler
                 {
                     node.Children.Add(match(Token_Class.ELSE));
                     node.Children.Add(Statements());
+                    if (TokenStream[InputPointer].token_type == Token_Class.Return)
+                    {
+                        node.Children.Add(return_statement());
+                    }
                     return node;
                 }
 
