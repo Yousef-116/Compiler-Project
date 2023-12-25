@@ -42,7 +42,7 @@ namespace Tiny_Compiler
                 while (InputPointer < TokenStream.Count)
                 {
                     Errors.Error_List.Add("Parsing Error: Expected Nothing and " + TokenStream[InputPointer].token_type + " found\r\n");
-                    InputPointer++;
+                    //InputPointer++;
                 }
 
                 return node;
@@ -141,24 +141,25 @@ namespace Tiny_Compiler
             Node node = new Node("function_body");
 
             Node tempLCurlyNode = match(Token_Class.LCurlybracket);
-            if (tempLCurlyNode == null)
-                return null;
+            //if (tempLCurlyNode == null)
+            //    return null;
 
             node.Children.Add(tempLCurlyNode);
 
             node.Children.Add(Statements());
 
             Node tempReturnNode = return_statement();
-            if (tempReturnNode == null)
-            {
-                InputPointer--;
-                //return node;
-            }
+            //if (tempReturnNode == null)
+            //{
+            //    InputPointer--;
+            //    //return node;
+            //}
             node.Children.Add(tempReturnNode);
 
             Node tempRCurlyNode = match(Token_Class.RCurlybracket);
-            if (tempRCurlyNode == null)
-                return node;
+            //if (tempRCurlyNode == null)
+            //    return node;
+
             node.Children.Add(tempRCurlyNode);
 
             return node;
@@ -173,23 +174,23 @@ namespace Tiny_Compiler
             node.Children.Add(DataType());
 
             Node tempMainNode = match(Token_Class.Main);
-            if (tempMainNode == null)
-                return null;
+            //if (tempMainNode == null)
+            //    return null;
             node.Children.Add(tempMainNode);
 
             Node tempLParanthesisNode = match(Token_Class.LParanthesis);
-            if (tempLParanthesisNode == null)
-                return node;
+            //if (tempLParanthesisNode == null)
+            //    return node;
             node.Children.Add(tempLParanthesisNode);
 
             Node tempRParanthesisNode = match(Token_Class.RParanthesis);
-            if (tempRParanthesisNode == null)
-                return node;
+            //if (tempRParanthesisNode == null)
+            //    return node;
             node.Children.Add(tempRParanthesisNode);
 
             Node tempFunctionBodyNode = function_body();
-            if (tempFunctionBodyNode == null) 
-                return node;
+            //if (tempFunctionBodyNode == null) 
+            //    return node;
             node.Children.Add(tempFunctionBodyNode);
 
 
@@ -218,7 +219,7 @@ namespace Tiny_Compiler
                 else // empty
                 {
                     Errors.Error_List.Add("Parsing Error: Expected DataType and " + TokenStream[InputPointer].token_type + " found");
-                    InputPointer++;
+                    //InputPointer++;
                     return null;
                 }
                 return node;
@@ -256,7 +257,7 @@ namespace Tiny_Compiler
         private Node Statement()
         {
             // Statement -> declaration_stmt | assignment_stmt | write_stmt | read_stmt | repeat_stmt | if_stmt | functioncall_stmt
-            if (InputPointer < TokenStream.Count)
+            if (InputPointer + 1 < TokenStream.Count)
             {
                 Node node = new Node("Statement");
                 if (TokenStream[InputPointer].token_type == Token_Class.ReservedWordFLOAT ||
@@ -266,7 +267,7 @@ namespace Tiny_Compiler
                     node.Children.Add(declaration_statement());
 
                 }
-                else if (TokenStream[InputPointer+1].token_type ==  Token_Class.LParanthesis)
+                else if (TokenStream[InputPointer + 1].token_type ==  Token_Class.LParanthesis)
                 {
                     node.Children.Add(function_call_statement());
                 }
@@ -398,7 +399,11 @@ namespace Tiny_Compiler
             }
             else //expr
             {
-                node.Children.Add(expression_statement());
+                Node tempExpressionNode = expression_statement();
+                if (tempExpressionNode == null)
+                    return null;
+
+                node.Children.Add(tempExpressionNode);
             }
 
             return node;
@@ -501,16 +506,16 @@ namespace Tiny_Compiler
             Node node = new Node("return_statement");
 
             Node tempReturnNode = match(Token_Class.Return);
-            if (tempReturnNode == null)
-                return null;
+            //if (tempReturnNode == null)
+            //    return null;
 
             node.Children.Add(tempReturnNode);
 
             node.Children.Add(expression_statement());
 
             Node tempSemiColonNode = match(Token_Class.Semicolon);
-            if (tempSemiColonNode == null)
-                return node;
+            //if (tempSemiColonNode == null)
+            //    return node;
             node.Children.Add(tempSemiColonNode);
 
             return node;
@@ -572,7 +577,7 @@ namespace Tiny_Compiler
             else // empty
             {
                 Errors.Error_List.Add("Parsing Error: Expected ConditionOperator and "+ TokenStream[InputPointer].token_type + " found\r\n");
-                InputPointer++;
+                //InputPointer++;
                 return null;
             }
 
@@ -632,7 +637,7 @@ namespace Tiny_Compiler
                 else // empty
                 {
                     Errors.Error_List.Add("Parsing Error: Expected ExpressionStatement and " + TokenStream[InputPointer].token_type + " found\r\n");
-                    InputPointer++;
+                    //InputPointer++;
                     return null;
                 }
 
@@ -665,7 +670,7 @@ namespace Tiny_Compiler
                 else
                 {
                     Errors.Error_List.Add("Parsing Error: Expected Equation and " + TokenStream[InputPointer].token_type + " found\r\n");
-                    InputPointer++;
+                    //InputPointer++;
                     return null;
                 }
             
@@ -690,7 +695,7 @@ namespace Tiny_Compiler
                 else
                 {
                     Errors.Error_List.Add("Parsing Error: Expected " +  Token_Class.LParanthesis + " and " + TokenStream[InputPointer].token_type + " found\r\n");
-                    InputPointer++;
+                    //InputPointer++;
                     return null;
                 }
                 return node;
@@ -764,7 +769,7 @@ namespace Tiny_Compiler
             else
             {
                 Errors.Error_List.Add("Parsing Error: Expected  Arithemitc_Operator  and " + TokenStream[InputPointer].token_type + " found\r\n");
-                InputPointer++;
+                //InputPointer++;
                 return null;
             }
             return node;
@@ -799,7 +804,7 @@ namespace Tiny_Compiler
                 else
                 {
                     Errors.Error_List.Add("Parsing Error: Expected Term and " + TokenStream[InputPointer].token_type + " found\r\n");
-                    InputPointer++;
+                    //InputPointer++;
                     return null;
                 }
 
@@ -827,7 +832,7 @@ namespace Tiny_Compiler
                 else
                 {
                     Errors.Error_List.Add("Parsing Error: Expected Number and " + TokenStream[InputPointer].token_type + " found\r\n");
-                    InputPointer++;
+                    //InputPointer++;
                     return null;
                 }
 
@@ -897,7 +902,7 @@ namespace Tiny_Compiler
                     else
                     {
                         Errors.Error_List.Add("Parsing Error: Expected " + Token_Class.Idenifier + " and " + TokenStream[InputPointer].token_type + " found\r\n");
-                        InputPointer++;
+                        //InputPointer++;
                         return null;
                     }
 
@@ -941,7 +946,7 @@ namespace Tiny_Compiler
                         + ExpectedToken.ToString() + " and " +
                         TokenStream[InputPointer].token_type.ToString() +
                         "  found\r\n");
-                    InputPointer++;
+                    //InputPointer++;
                     return null;
                 }
             }
