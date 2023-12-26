@@ -350,10 +350,12 @@ namespace Tiny_Compiler
                     node.Children.Add(declaration_statement_dash());
                     return node;
                 }
-                while (TokenStream[InputPointer].token_type != Token_Class.Semicolon)
+                while (TokenStream[InputPointer].token_type != Token_Class.Semicolon && InputPointer < TokenStream.Count)
                 {
                     Errors.Error_List.Add("Parsing Error: Expected SemiColon and " + TokenStream[InputPointer].token_type + " found");
                     InputPointer++;
+                    if (InputPointer >= TokenStream.Count)
+                        break;
                 }
 
                 // e
@@ -372,10 +374,12 @@ namespace Tiny_Compiler
                 Node tempAssignOP = match(Token_Class.assignmentOP);
                 if (tempAssignOP == null) 
                 {
-                    while (TokenStream[InputPointer].token_type != Token_Class.Semicolon)
+                    while (TokenStream[InputPointer].token_type != Token_Class.Semicolon && InputPointer < TokenStream.Count)
                     {
                         Errors.Error_List.Add("Parsing Error: Expected SemiColon and " + TokenStream[InputPointer].token_type + " found");
                         InputPointer++;
+                        if (InputPointer >= TokenStream.Count)
+                            break;
                     }
                 }
                 else
@@ -519,7 +523,10 @@ namespace Tiny_Compiler
         private Node return_statement()
         {
             // return_statement -> "return" expression_statement ";"
-            
+
+            if (InputPointer >= TokenStream.Count)
+                return null;
+
             Node node = new Node("return_statement");
 
             Node tempReturnNode = match(Token_Class.Return);
@@ -534,11 +541,17 @@ namespace Tiny_Compiler
             //if (tempSemiColonNode == null)
             //    return node;
             node.Children.Add(tempSemiColonNode);
-            while (TokenStream[InputPointer].token_type != Token_Class.RCurlybracket)
+
+            if (InputPointer >= TokenStream.Count)
+                return node;
+
+            while (TokenStream[InputPointer].token_type != Token_Class.RCurlybracket && InputPointer < TokenStream.Count)
             {
                 {
                     Errors.Error_List.Add("Parsing Error: Expected Nothing and " + TokenStream[InputPointer].token_type + " found");
                     InputPointer++;
+                    if (InputPointer >= TokenStream.Count)
+                        break ;
                     //return null;
                 }
             }
