@@ -675,7 +675,7 @@ namespace Tiny_Compiler
         }
         private Node bracket_equation()
         {
-            // bracket -> "(" term equation_arithmetic_part ")"
+            // bracket -> "(" term equation_arithmetic_part ")" equation_arithemtic_part
             if (InputPointer < TokenStream.Count)
             {
                 Node node = new Node("bracket_equation");
@@ -736,6 +736,7 @@ namespace Tiny_Compiler
 
         private Node Arithmetic_Operator()
         {
+            //Arithemitc_Operator -> + | - | * | /
             if (InputPointer >= TokenStream.Count)
             {
                 return null;
