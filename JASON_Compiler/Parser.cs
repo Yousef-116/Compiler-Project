@@ -350,6 +350,11 @@ namespace Tiny_Compiler
                     node.Children.Add(declaration_statement_dash());
                     return node;
                 }
+                while (TokenStream[InputPointer].token_type != Token_Class.Semicolon)
+                {
+                    Errors.Error_List.Add("Parsing Error: Expected SemiColon and " + TokenStream[InputPointer].token_type + " found");
+                    InputPointer++;
+                }
 
                 // e
                 return null;
@@ -364,7 +369,19 @@ namespace Tiny_Compiler
                 Node node = new Node("assignment_statement");
 
                 node.Children.Add(match(Token_Class.Idenifier));
-                node.Children.Add(match(Token_Class.assignmentOP));
+                Node tempAssignOP = match(Token_Class.assignmentOP);
+                if (tempAssignOP == null) 
+                {
+                    while (TokenStream[InputPointer].token_type != Token_Class.Semicolon)
+                    {
+                        Errors.Error_List.Add("Parsing Error: Expected SemiColon and " + TokenStream[InputPointer].token_type + " found");
+                        InputPointer++;
+                    }
+                }
+                else
+                {
+                    node.Children.Add(tempAssignOP);
+                }
                 node.Children.Add(expression_statement());
                 node.Children.Add(match(Token_Class.Semicolon));
 
